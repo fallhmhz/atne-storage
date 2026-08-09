@@ -1,0 +1,24 @@
+{
+  // 点「Deploy to Cloudflare」时，Cloudflare 会照着这份配置
+  // 自动帮你新建 R2 桶、部署 Worker，并把下面的 bucket_name 改成实际建出来的名字。
+  "name": "atne-storage",
+  "main": "src/index.js",
+  "compatibility_date": "2026-01-01",
+
+  // 文件都放这个桶里。binding 名字必须是 BUCKET，代码里认这个。
+  "r2_buckets": [
+    {
+      "binding": "BUCKET",
+      "bucket_name": "atne-files"
+    }
+  ],
+
+  "vars": {
+    // 单个文件上限，按需要改
+    "MAX_MB": "25",
+    // 想只允许自己的站点调用，把 * 换成 https://你的域名
+    "ALLOW_ORIGIN": "*"
+  },
+
+  "observability": { "enabled": true }
+}
