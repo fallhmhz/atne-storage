@@ -11,7 +11,14 @@
  *   DELETE /<名字>            删除（需要 x-upload-key）
  */
 
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
+
+/* 保命用的：万一有人把这个 Worker 绑到了存帐号记录的私有桶上，
+   这些前缀一律拒绝读写，别让公开的 GET 把帐号记录漏出去。 */
+const RESERVED = ['acct/', 'map/'];
+function reserved(key) {
+  return RESERVED.some(p => key === p.slice(0, -1) || key.startsWith(p));
+}
 
 function corsHeaders(env) {
   return {
@@ -79,6 +86,7 @@ export default {
     if (req.method === 'GET' || req.method === 'HEAD') {
       const key = keyOf(url.pathname, '/f');
       if (!key) return json({ ok: false, error: '路径不对' }, 400, cors);
+      if (reserved(key)) return json({ ok: false, error: '这个路径不对外' }, 403, cors);
 
       const obj = await env.BUCKET.get(key);
       if (!obj) return json({ ok: false, error: '文件不存在' }, 404, cors);
@@ -98,6 +106,7 @@ export default {
 
       const key = keyOf(url.pathname);
       if (!key) return json({ ok: false, error: '要给文件起个名字' }, 400, cors);
+      if (reserved(key)) return json({ ok: false, error: '这个路径是保留的' }, 403, cors);
 
       const len = Number(req.headers.get('content-length') || 0);
       if (len > maxBytes) {
@@ -115,6 +124,7 @@ export default {
       if (!authed(req, env)) return json({ ok: false, error: '口令不对' }, 403, cors);
       const key = keyOf(url.pathname);
       if (!key) return json({ ok: false, error: '路径不对' }, 400, cors);
+      if (reserved(key)) return json({ ok: false, error: '这个路径是保留的' }, 403, cors);
       await env.BUCKET.delete(key);
       return json({ ok: true }, 200, cors);
     }
