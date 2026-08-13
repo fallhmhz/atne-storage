@@ -15,7 +15,7 @@
   "r2_buckets": [
     {
       "binding": "BUCKET",
-      "bucket_name": "atne-files"
+      "bucket_name": "atoolne-storage"
     }
   ],
 
