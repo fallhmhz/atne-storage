@@ -1,9 +1,15 @@
 {
   // 点「Deploy to Cloudflare」时，Cloudflare 会照着这份配置
   // 自动帮你新建 R2 桶、部署 Worker，并把下面的 bucket_name 改成实际建出来的名字。
-  "name": "atne-storage",
+  "name": "atoolne",
   "main": "src/index.js",
   "compatibility_date": "2026-01-01",
+
+  // 上传与删除必须使用的口令。这里只声明它是必填密钥，
+  // 真正的值由每位使用者在部署页自行填写，绝不能写进模板。
+  "secrets": {
+    "required": ["UPLOAD_KEY"]
+  },
 
   // 文件都放这个桶里。binding 名字必须是 BUCKET，代码里认这个。
   "r2_buckets": [

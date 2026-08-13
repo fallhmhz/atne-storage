@@ -1,11 +1,18 @@
 {
-  "name": "atne-storage",
+  "name": "atoolne",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"
+  },
+  "cloudflare": {
+    "bindings": {
+      "UPLOAD_KEY": {
+        "description": "请填写一串只有你知道的随机口令，并先保存下来；部署完成后还要把同一串口令填回 atne。"
+      }
+    }
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
