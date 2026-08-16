@@ -1,8 +1,8 @@
 /**
- * atne storage —— 你自己的文件仓库
+ * atoolne storage —— 你自己的文件仓库
  *
  * 这个 Worker 是你和你的 R2 桶之间唯一的门。
- * 密钥（UPLOAD_KEY）只存在这里，永远不会进浏览器，也不会进 atne 的服务器。
+ * 密钥（UPLOAD_KEY）由浏览器直接发给这个 Worker，不会进入 atoolne 的服务器。
  *
  *   GET    /                 健康检查
  *   GET    /_ping            带 x-upload-key 时顺便告诉你口令对不对
@@ -74,6 +74,7 @@ export default {
     /* ---------- 健康检查 / 口令自检 ---------- */
     if ((req.method === 'GET' || req.method === 'HEAD') &&
         (url.pathname === '/' || url.pathname === '/_ping')) {
+      // service 是现有网站与旧私人仓库共用的内部识别值，暂时保持兼容。
       const body = { ok: true, service: 'atne-storage', version: VERSION, maxMB: maxBytes / 1048576 };
       if (url.pathname === '/_ping') {
         body.hasKey = !!env.UPLOAD_KEY;
